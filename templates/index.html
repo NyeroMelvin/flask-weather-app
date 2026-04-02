@@ -20,16 +20,13 @@
 </head>
 <body>
   <h1>🌤️ Metro Weather App</h1>
-
   <form action="/weather" method="POST">
     <input type="text" name="city" placeholder="Enter city name..." required />
     <button type="submit">Search</button>
   </form>
-
   {% if error %}
     <p class="error">⚠️ {{ error }}</p>
   {% endif %}
-
   {% if weather %}
     <div class="weather-box">
       <h2>📍 {{ weather.city }}</h2>
@@ -38,7 +35,6 @@
       <p>🕒 Local Time: {{ weather.local_time }}</p>
     </div>
   {% endif %}
-
   <h3>🕒 Recent Searches</h3>
   {% if history %}
   <table>
@@ -64,4 +60,7 @@
     {% endfor %}
   </table>
   {% else %}
-    <p>No searches yet.
+    <p>No searches yet. Try searching for a city!</p>
+  {% endif %}
+</body>
+</html>
