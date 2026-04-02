@@ -19,6 +19,7 @@
   </style>
 </head>
 <body>
+
   <h1>🌤️ Metro Weather App</h1>
 
   <form action="/weather" method="POST">
@@ -39,28 +40,34 @@
   {% endif %}
 
   <h3>🕒 Recent Searches</h3>
+
   {% if history %}
   <table>
-    <tr>
-      <th>City</th>
-      <th>Temp (°C)</th>
-      <th>Condition</th>
-      <th>Time</th>
-      <th>Action</th>
-    </tr>
-    {% for row in history %}
-    <tr>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
-      <td>{{ row[3] }}</td>
-      <td>{{ (row[4] + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M') }}</td>
-      <td>
-        <form action="/delete/{{ row[0] }}" method="POST">
-          <button class="del-btn" type="submit">Delete</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
+    <thead>
+      <tr>
+        <th>City</th>
+        <th>Temp (°C)</th>
+        <th>Condition</th>
+        <th>Time</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in history %}
+      <tr>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ (row[4] + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>
+          <form action="/delete/{{ row[0] }}" method="POST" style="margin:0;">
+            <input type="hidden" name="_method" value="POST">
+            <button type="submit" class="del-btn">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
   {% else %}
     <p>No searches yet. Try searching for a city!</p>
