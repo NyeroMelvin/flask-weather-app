@@ -9,24 +9,16 @@ load_dotenv()
 
 app = Flask(__name__)
 
-try:
-    init_db()
-    print("✅ Database initialized")
-except Exception as e:
-    print(f"❌ DB Error: {e}")
+init_db()
 
 @app.route('/')
 def index():
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
-        history = cur.fetchall()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print(f"❌ DB fetch error: {e}")
-        history = []
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
+    history = cur.fetchall()
+    cur.close()
+    conn.close()
     return render_template('index.html', weather=None, history=history, error=None, timedelta=timedelta)
 
 @app.route('/weather', methods=['POST'])
@@ -34,15 +26,13 @@ def get_weather():
     city = request.form.get('city')
     api_key = os.getenv("WEATHER_API_KEY")
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+
     response = requests.get(url)
 
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
-        history = cur.fetchall()
-    except Exception:
-        history = []
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
+    history = cur.fetchall()
 
     if response.status_code == 200:
         data = response.json()
@@ -51,33 +41,29 @@ def get_weather():
             'temperature': data['main']['temp'],
             'description': data['weather'][0]['description']
         }
-        try:
-            cur.execute(
-                "INSERT INTO searches (city, temperature, description) VALUES (%s, %s, %s)",
-                (weather['city'], weather['temperature'], weather['description'])
-            )
-            conn.commit()
-            cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
-            history = cur.fetchall()
-            cur.close()
-            conn.close()
-        except Exception as e:
-            print(f"❌ Insert error: {e}")
+        cur.execute(
+            "INSERT INTO searches (city, temperature, description) VALUES (%s, %s, %s)",
+            (weather['city'], weather['temperature'], weather['description'])
+        )
+        conn.commit()
+        cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
+        history = cur.fetchall()
+        cur.close()
+        conn.close()
         return render_template('index.html', weather=weather, history=history, error=None, timedelta=timedelta)
     else:
+        cur.close()
+        conn.close()
         return render_template('index.html', weather=None, history=history, error="City not found!", timedelta=timedelta)
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_search(id):
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("DELETE FROM searches WHERE id = %s", (id,))
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print(f"❌ Delete error: {e}")
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM searches WHERE id = %s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
