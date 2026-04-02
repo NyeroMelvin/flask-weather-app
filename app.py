@@ -37,7 +37,6 @@ def get_weather():
     if response.status_code == 200:
         data = response.json()
 
-        # Get city's timezone offset in seconds from API
         tz_offset_seconds = data['timezone']
         city_tz = timezone(timedelta(seconds=tz_offset_seconds))
         local_time = datetime.now(city_tz).strftime('%Y-%m-%d %H:%M')
@@ -50,8 +49,8 @@ def get_weather():
         }
 
         cur.execute(
-            "INSERT INTO searches (city, temperature, description) VALUES (%s, %s, %s)",
-            (weather['city'], weather['temperature'], weather['description'])
+            "INSERT INTO searches (city, temperature, description, tz_offset) VALUES (%s, %s, %s, %s)",
+            (weather['city'], weather['temperature'], weather['description'], tz_offset_seconds)
         )
         conn.commit()
         cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
