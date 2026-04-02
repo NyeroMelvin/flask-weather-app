@@ -1,8 +1,8 @@
-from datetime import timezone, timedelta
 from flask import Flask, render_template, request, redirect, url_for
 import requests
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 from db import get_connection, init_db
 
 load_dotenv()
@@ -28,12 +28,12 @@ def index():
         print(f"❌ DB fetch error: {e}")
         history = []
     return render_template('index.html', weather=None, history=history, error=None, timedelta=timedelta)
+
 @app.route('/weather', methods=['POST'])
 def get_weather():
     city = request.form.get('city')
     api_key = os.getenv("WEATHER_API_KEY")
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-
     response = requests.get(url)
 
     try:
@@ -41,7 +41,7 @@ def get_weather():
         cur = conn.cursor()
         cur.execute("SELECT * FROM searches ORDER BY searched_at DESC LIMIT 10")
         history = cur.fetchall()
-    except:
+    except Exception:
         history = []
 
     if response.status_code == 200:
@@ -63,9 +63,9 @@ def get_weather():
             conn.close()
         except Exception as e:
             print(f"❌ Insert error: {e}")
-       return render_template('index.html', weather=weather, history=history, error=None, timedelta=timedelta)
-       else
-       return render_template('index.html', weather=None, history=history, error="City not found!", timedelta=timedelta)
+        return render_template('index.html', weather=weather, history=history, error=None, timedelta=timedelta)
+    else:
+        return render_template('index.html', weather=None, history=history, error="City not found!", timedelta=timedelta)
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_search(id):
