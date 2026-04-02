@@ -1,3 +1,4 @@
+from datetime import timezone, timedelta
 from flask import Flask, render_template, request, redirect, url_for
 import requests
 import os
@@ -26,8 +27,7 @@ def index():
     except Exception as e:
         print(f"❌ DB fetch error: {e}")
         history = []
-    return render_template('index.html', weather=None, history=history, error=None)
-
+    return render_template('index.html', weather=None, history=history, error=None, timedelta=timedelta)
 @app.route('/weather', methods=['POST'])
 def get_weather():
     city = request.form.get('city')
@@ -63,9 +63,9 @@ def get_weather():
             conn.close()
         except Exception as e:
             print(f"❌ Insert error: {e}")
-        return render_template('index.html', weather=weather, history=history, error=None)
-    else:
-        return render_template('index.html', weather=None, history=history, error="City not found!")
+       return render_template('index.html', weather=weather, history=history, error=None, timedelta=timedelta)
+       else
+       return render_template('index.html', weather=None, history=history, error="City not found!", timedelta=timedelta)
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_search(id):
