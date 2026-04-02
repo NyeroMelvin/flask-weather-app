@@ -51,12 +51,12 @@
     </tr>
     {% for row in history %}
     <tr>
-      <td>{{ row[1] }}</td>
-      <td>{{ row[2] }}</td>
-      <td>{{ row[3] }}</td>
-      <td>{{ (row[5] + timedelta(seconds=row[4]|int)).strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ row.city }}</td>
+      <td>{{ row.temperature }}</td>
+      <td>{{ row.description }}</td>
+      <td>{{ row.local_time }}</td>
       <td>
-        <form action="/delete/{{ row[0] }}" method="POST">
+        <form action="/delete/{{ row.id }}" method="POST">
           <button class="del-btn" type="submit">Delete</button>
         </form>
       </td>
@@ -64,8 +64,4 @@
     {% endfor %}
   </table>
   {% else %}
-    <p>No searches yet. Try searching for a city!</p>
-  {% endif %}
-
-</body>
-</html>
+    <p>No searches yet.
