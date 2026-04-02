@@ -54,7 +54,7 @@
       <td>{{ row[1] }}</td>
       <td>{{ row[2] }}</td>
       <td>{{ row[3] }}</td>
-      <td>{{ (row[5] + timedelta(seconds=row[4])).strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ (row[5] + timedelta(seconds=row[4]|int)).strftime('%Y-%m-%d %H:%M') }}</td>
       <td>
         <form action="/delete/{{ row[0] }}" method="POST">
           <button class="del-btn" type="submit">Delete</button>
