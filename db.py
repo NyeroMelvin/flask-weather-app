@@ -5,7 +5,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_connection():
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        sslmode='require'
+    )
     return conn
 
 def init_db():
