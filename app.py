@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import requests
 import os
 from dotenv import load_dotenv
-from datetime import timedelta
+from datetime import datetime, timezone, timedelta
 from db import get_connection, init_db
 
 load_dotenv()
@@ -36,11 +36,19 @@ def get_weather():
 
     if response.status_code == 200:
         data = response.json()
+
+        # Get city's timezone offset in seconds from API
+        tz_offset_seconds = data['timezone']
+        city_tz = timezone(timedelta(seconds=tz_offset_seconds))
+        local_time = datetime.now(city_tz).strftime('%Y-%m-%d %H:%M')
+
         weather = {
             'city': data['name'],
             'temperature': data['main']['temp'],
-            'description': data['weather'][0]['description']
+            'description': data['weather'][0]['description'],
+            'local_time': local_time
         }
+
         cur.execute(
             "INSERT INTO searches (city, temperature, description) VALUES (%s, %s, %s)",
             (weather['city'], weather['temperature'], weather['description'])

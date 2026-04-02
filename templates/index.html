@@ -31,12 +31,13 @@
   {% endif %}
 
   {% if weather %}
-    <div class="weather-box">
-      <h2>📍 {{ weather.city }}</h2>
-      <p>🌡️ Temperature: {{ weather.temperature }}°C</p>
-      <p>☁️ Condition: {{ weather.description }}</p>
-    </div>
-  {% endif %}
+  <div class="weather-box">
+    <h2>📍 {{ weather.city }}</h2>
+    <p>🌡️ Temperature: {{ weather.temperature }}°C</p>
+    <p>☁️ Condition: {{ weather.description }}</p>
+    <p>🕒 Local Time: {{ weather.local_time }}</p>
+  </div>
+{% endif %}
 
   <h3>🕒 Recent Searches</h3>
   {% if history %}
