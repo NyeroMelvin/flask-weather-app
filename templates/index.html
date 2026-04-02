@@ -19,7 +19,7 @@
   </style>
 </head>
 <body>
-  <h1>🌤️ Flask Weather App</h1>
+  <h1>🌤️ Metro Weather App</h1>
 
   <form action="/weather" method="POST">
     <input type="text" name="city" placeholder="Enter city name..." required />
@@ -68,22 +68,3 @@
 
 </body>
 </html>
-```
-
-### `.env` (local only — never commit!)
-```
-WEATHER_API_KEY=your_openweathermap_key_here
-DATABASE_URL=postgresql://localhost/weatherdb
-```
-
-### `.gitignore`
-```
-venv/
-.env
-__pycache__/
-*.pyc
-```
-
-### `Procfile` (tells Railway how to run the app)
-```
-web: gunicorn app:app
